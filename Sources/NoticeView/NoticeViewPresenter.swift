@@ -155,7 +155,11 @@ open class NoticeViewPresenter: NSObject {
             initialPosition = -size.height
             tableView.contentInset = UIEdgeInsets(top: size.height, left: 0, bottom: 0, right: 0)
             tableView.setContentOffset(CGPoint(x: 0, y: -size.height), animated: false)
-            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+
+            if !tableView.visibleCells.isEmpty {
+                tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+            }
+
             tableView.updateConstraints()
         } else {
             initialPosition = 0
