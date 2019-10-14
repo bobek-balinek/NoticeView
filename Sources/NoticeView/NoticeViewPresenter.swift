@@ -56,15 +56,15 @@ open class NoticeViewPresenter: NSObject {
             setTitle(val)
         }
 
+        if interval > 0 {
+            perform(#selector(dismiss), with: nil, afterDelay: interval)
+        }
+
         // There can only be one notice at given time.
         guard !isPresented else { return }
 
         calculateLayout(with: notice.frame.size)
         animateIn()
-
-        if interval > 0 {
-            perform(#selector(dismiss), with: nil, afterDelay: interval)
-        }
     }
 
     /// Dismisses the presented notice
