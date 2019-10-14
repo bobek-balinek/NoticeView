@@ -10,7 +10,7 @@ import UIKit
 /// Presenter class to orchestrate the display of the notice view
 open class NoticeViewPresenter: NSObject {
     /// isPresented returns whether the screen is visible to the user or not
-    public var isPresented: Bool { topConstraint.constant == 0 }
+    public var isPresented: Bool { topConstraint.constant != initialPosition }
     // titleLabel allows to modify the underlying title label
     public var titleLabel: UILabel { notice.titleLabel }
     // imageView allows to modify the underlying image view
