@@ -1,5 +1,5 @@
 import XCTest
-@testable import Notice_View
+@testable import NoticeView
 
 final class NoticeViewTests: XCTestCase {
     func testExample() {

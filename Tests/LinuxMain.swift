@@ -1,7 +1,7 @@
 import XCTest
 
-import Notice_ViewTests
+import NoticeViewTests
 
 var tests = [XCTestCaseEntry]()
-tests += Notice_ViewTests.allTests()
+tests += NoticeViewTests.allTests()
 XCTMain(tests)

@@ -32,7 +32,7 @@ open class NoticeViewPresenter: NSObject {
     /// - Parameter containerView: Container view that the notice should display within
     /// - Parameter backgroundColor: Background colour for the notice
     /// - Parameter textColor: Text colour for the notice
-    init(_ containerView: UIView, backgroundColor: UIColor = .lightGray, textColor: UIColor = .black) {
+    public init(_ containerView: UIView, backgroundColor: UIColor = .lightGray, textColor: UIColor = .black) {
         self.containerView = containerView
         super.init()
 
@@ -80,11 +80,6 @@ open class NoticeViewPresenter: NSObject {
         cancelIfDismissing()
 
         topConstraint.constant == initialPosition ? dismiss() : present()
-    }
-
-    /// Cancel any pending dismissals
-    func cancelIfDismissing() {
-        NSObject.cancelPreviousPerformRequests(withTarget: self)
     }
 
     // MARK: - Content
@@ -170,6 +165,11 @@ open class NoticeViewPresenter: NSObject {
         } else {
             initialPosition = 0
         }
+    }
+
+    /// Cancel any pending dismissals
+    private func cancelIfDismissing() {
+        NSObject.cancelPreviousPerformRequests(withTarget: self)
     }
 }
 
