@@ -63,7 +63,6 @@ open class NoticeViewPresenter: NSObject {
         animateIn()
 
         if interval > 0 {
-            cancelIfDismissing()
             perform(#selector(dismiss), with: nil, afterDelay: interval)
         }
     }
@@ -87,10 +86,6 @@ open class NoticeViewPresenter: NSObject {
     /// Modifies the text contents of the notice. If the notice is not visible, it will get presented automatically
     /// - Parameter text: A new text value
     @objc public func setTitle(_ text: String) {
-        if !isPresented {
-            present()
-        }
-
         notice.titleLabel.text = text
         notice.setNeedsLayout()
         notice.layoutIfNeeded()
