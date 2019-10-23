@@ -10,7 +10,7 @@ import UIKit
 /// Presenter class to orchestrate the display of the notice view
 open class NoticeViewPresenter: NSObject {
     /// isPresented returns whether the screen is visible to the user or not
-    public var isPresented: Bool { topConstraint.constant == initialPosition }
+    private(set) var isPresented: Bool = false
     // titleLabel allows to modify the underlying title label
     public var titleLabel: UILabel { notice.titleLabel }
     // imageView allows to modify the underlying image view
@@ -37,7 +37,7 @@ open class NoticeViewPresenter: NSObject {
         super.init()
 
         let estimatedSize = notice.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-        calculateLayout(with: estimatedSize)
+        calculateLayout(with: estimatedSize, initial: true)
         setContainer(view: containerView)
         setTitle(color: textColor)
         setBackground(color: backgroundColor)
@@ -63,7 +63,7 @@ open class NoticeViewPresenter: NSObject {
         // There can only be one notice at given time.
         guard !isPresented else { return }
 
-        calculateLayout(with: notice.frame.size)
+        calculateLayout(with: notice.frame.size, initial: false)
         animateIn()
     }
 
@@ -78,7 +78,7 @@ open class NoticeViewPresenter: NSObject {
     @objc public func toggle() {
         cancelIfDismissing()
 
-        topConstraint.constant == initialPosition ? dismiss() : present()
+        isPresented ? dismiss() : present()
     }
 
     // MARK: - Content
@@ -126,9 +126,11 @@ open class NoticeViewPresenter: NSObject {
         notice.setNeedsLayout()
         notice.transform = CGAffineTransform(translationX: 0, y: -notice.frame.height)
         self.notice.alpha = 0
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: 0.3, animations: {
             self.notice.alpha = 1
             self.notice.transform = CGAffineTransform(translationX: 0, y: 0)
+        }) { (_) in
+            self.isPresented = true
         }
     }
 
@@ -142,7 +144,9 @@ open class NoticeViewPresenter: NSObject {
             self.notice.alpha = 0
             self.notice.transform = CGAffineTransform(translationX: 0, y: -height)
         }) { (_) in
+            self.calculateLayout(with: .zero, initial: false)
             self.topConstraint.constant = -height
+            self.isPresented = false
             self.notice.setNeedsLayout()
         }
     }
@@ -150,14 +154,15 @@ open class NoticeViewPresenter: NSObject {
     /// Ensures the container view is properly positioned to be able to display a view.
     /// If the container view is a table view, it adjusts the contentInset and contentOffset to accomodate for the notice size
     /// - Parameter size: An estimated or calculated size of the notice view
-    private func calculateLayout(with size: CGSize) {
+    private func calculateLayout(with size: CGSize, initial: Bool) {
         if let tableView = containerView as? UITableView {
             initialPosition = -size.height
+
             tableView.contentInset = UIEdgeInsets(top: size.height, left: 0, bottom: 0, right: 0)
-            tableView.setContentOffset(CGPoint(x: 0, y: -size.height), animated: false)
+            tableView.setContentOffset(CGPoint(x: 0, y: -size.height), animated: !initial)
 
             if !tableView.visibleCells.isEmpty {
-                tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+                tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: !initial)
             }
 
             tableView.updateConstraints()
