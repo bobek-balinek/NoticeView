@@ -41,6 +41,7 @@ open class NoticeViewPresenter: NSObject {
         setContainer(view: containerView)
         setTitle(color: textColor)
         setBackground(color: backgroundColor)
+        notice.alpha = 0
     }
 
     // MARK: - Presentation
